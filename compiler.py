@@ -13,6 +13,9 @@ OK = -2
 i = 0
 basicWords = ['program', 'if', 'declare', 'else', 'while', 'switchcase', 'forcase', 'incase', 'case', 'default', 'not', 'and', 'or', 'function', 'procedure', 'call', 'return', 'in', 'inout', 'input', 'print']
 # eof = 10
+tempVars = 0
+tempVariables = []
+allQuads = []
 flag = False  # this var is set by default at False and will be used in order to check if . has been found when EOF.It gets True value when . is read.
 # When the reading finishes,there is an if to check if it's true.
 
@@ -914,26 +917,48 @@ def syntax(file): #
     program() #program is called
 
 ######--------INTERMEDIATE CODE-------##########
-list = []
 
 def nextquad(list):
     return (len(list))
 
 def genquad(op,x,y,z):
-    array = [op,x,y,z]
-    list.append(array)
+    global allQuads
+    quad = [op,x,y,z]
+    allQuads.append(quad)
 
-tempVars = 0
-tempVariables = []
 def newtemp():
     global tempVars
-    tempVars = tempsVars + 1
+    tempVars += 1
     tempVariables.append('T'+str(tempVars-1))
-    return 'T'+str(tempVars-1)
+    return 'T_'+str(tempVars-1)
+
+def emptylist():
+    quad = ['_','_','_','_']
+    allQuads.append(quad)
+
+def makelist(x):
+    return [x]
+
+def merge(list1,list2):
+    list1.extend(list2)
+    return list1
+
+def backpatch(list,z):
+    global allQuads
+    for quad in allQuads:
+        if(quad[3] == '_'):
+            quad[3] = z
 
 #######------ MAIN ------########
 #file = lectural() #here lectural runs
 #print("-----------------------------------------------------------------------")
 #syntax(file) #here syntactical runs
 #genquad()
-newtemp()
+y = ['a']
+x = ['_','_','_','_']
+merge(y,x)
+print("y is: ",y)
+print("allQuads before is: ", allQuads)
+backpatch(allQuads,'l')
+print("allQuads after is: ", allQuads)
+#print("x: ", x)
